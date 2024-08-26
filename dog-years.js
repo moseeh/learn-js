@@ -40,5 +40,5 @@ function dogYears(planet, seconds) {
     const dogYears = planetYears * 7;
 
     // Round the result to two decimal places
-    return dogYears.toFixed(2);
+    return Number(dogYears.toFixed(2));
 }
