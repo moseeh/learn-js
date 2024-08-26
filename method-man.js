@@ -11,7 +11,7 @@ function yell(str) {
 }
 
 function whisper(str) {
-    return str.toLowerCase()
+    return "*" + str.toLowerCase() + "*"
 }
 
 function capitalize(str) {
