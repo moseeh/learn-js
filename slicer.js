@@ -11,7 +11,7 @@ function slice(input , start, end){
     for (let i = start; i < input.length; i++) {
 
     }
-
+    let res
     if (typeof input === "string") {
         res = ""
         for (let i = start; i < end; i++) {
