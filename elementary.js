@@ -19,7 +19,7 @@ function divide(a, b) {
         quotient++;
     }
 
-    return sign * quotient;
+    return multiply(sign,  quotient);
 }
 
 function modulus(a, b) {
@@ -33,5 +33,5 @@ function modulus(a, b) {
         a -= b;
     }
 
-    return sign * a;
+    return multiply(sign , a);
 }
