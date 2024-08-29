@@ -11,7 +11,6 @@ function slice(input , start, end){
     for (let i = start; i < input.length; i++) {
 
     }
-    let result
 
     if (typeof input === "string") {
         res = ""
@@ -27,3 +26,5 @@ function slice(input , start, end){
     }
     return res
 }
+
+console.log(slice('abcdef', 2))
