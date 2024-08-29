@@ -40,7 +40,7 @@ function divide(a, b) {
     return multiply(sign, quotient); // Using 'multiply' to adjust the sign
 }
 
-function modulus(a, b) {
+function modulo(a, b) {
     if (b === 0) {
         throw new Error("Division by zero");
     }
@@ -61,8 +61,3 @@ function abs(num) {
     return num < 0 ? -num : num;
 }
 
-// Testing the divide and modulus functions
-console.log(divide(10, 20));  // Output: 0
-console.log(divide(20, 10));  // Output: 2
-console.log(modulus(20, 10)); // Output: 0
-console.log(modulus(21, 10)); // Output: 1
