@@ -69,9 +69,3 @@ function trunc(num) {
     
     return neg ? -count : count;
 }
-
-const nums = [3.7, -3.7, 3.1, -3.1];
-console.log(nums.map(round));
-console.log(nums.map(ceil));
-console.log(nums.map(floor));
-console.log(nums.map(trunc));
