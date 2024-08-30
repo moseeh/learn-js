@@ -3,6 +3,13 @@ function split(str, delimiter) {
     var temp = "";
     var matchIndex = 0;
 
+    if (delimiter === "") {
+        for (var i = 0; i < str.length; i++) {
+            result.push(str[i])
+        }
+        return result
+    }
+
     for (var i = 0; i < str.length; i++) {
         if (str[i] === delimiter[matchIndex]) {
             matchIndex++;
