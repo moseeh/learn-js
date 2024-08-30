@@ -26,11 +26,10 @@ function ceil(num) {
     }
     
     let count = 0;
-    while (!(num < 1 && num > -1)) {
+    while (num >= 1) {
         num -= 1;
         count++;
     }
-    
     if (num > 0) {
         return neg ? -count : count + 1;
     } else {
