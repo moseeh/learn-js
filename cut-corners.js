@@ -32,11 +32,12 @@ function ceil(num) {
     }
     
     if (num > 0) {
-        return neg ? -count - 1 : count + 1;
+        return neg ? -count : count + 1;
     } else {
         return neg ? -count : count;
     }
 }
+
 
 function floor(num) {
     let neg = false;
