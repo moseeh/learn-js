@@ -5,19 +5,15 @@ function round(num) {
         num = -num;
     }
     
-    let count = 0;
-    while (!(num < 1 && num > -1)) {
-        num -= 1;
-        count++;
-    }
+    let integerPart = num - (num % 1);
+    let decimalPart = num % 1;
     
-    if (num < 0.5) {
-        return neg ? -count : count;
+    if (decimalPart < 0.5) {
+        return neg ? -integerPart : integerPart;
     } else {
-        return neg ? -count - 1 : count + 1;
+        return neg ? -integerPart - 1 : integerPart + 1;
     }
 }
-
 function ceil(num) {
     let neg = false;
     if (num < 0) {
@@ -25,19 +21,15 @@ function ceil(num) {
         num = -num;
     }
     
-    let count = 0;
-    while (num >= 1) {
-        num -= 1;
-        count++;
-    }
-    if (num > 0) {
-        return neg ? -count : count + 1;
+    let integerPart = num - (num % 1);
+    let decimalPart = num % 1;
+    
+    if (decimalPart > 0) {
+        return neg ? -integerPart : integerPart + 1;
     } else {
-        return neg ? -count : count;
+        return neg ? -integerPart : integerPart;
     }
 }
-
-
 function floor(num) {
     let neg = false;
     if (num < 0) {
@@ -45,15 +37,10 @@ function floor(num) {
         num = -num;
     }
     
-    let count = 0;
-    while (!(num < 1 && num > -1)) {
-        num -= 1;
-        count++;
-    }
+    let integerPart = num - (num % 1);
     
-    return neg ? -count - 1 : count;
+    return neg ? -integerPart - 1 : integerPart;
 }
-
 function trunc(num) {
     let neg = false;
     if (num < 0) {
@@ -61,11 +48,7 @@ function trunc(num) {
         num = -num;
     }
     
-    let count = 0;
-    while (!(num < 1 && num > -1)) {
-        num -= 1;
-        count++;
-    }
+    let integerPart = num - (num % 1);
     
-    return neg ? -count : count;
+    return neg ? -integerPart : integerPart;
 }
