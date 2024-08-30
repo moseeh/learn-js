@@ -1,54 +1,86 @@
-function round(num) {
+function round(int) {
     let neg = false;
-    if (num < 0) {
+    if (int < 0) {
         neg = true;
-        num = -num;
+        int = -int;
     }
-    
-    let integerPart = num - (num % 1);
-    let decimalPart = num % 1;
-    
-    if (decimalPart < 0.5) {
-        return neg ? -integerPart : integerPart;
+    let counter = 0;
+    while (!(int < 1 && int > -1)) {
+        int -= 1;
+        counter++;
+    }
+    if (int < 0.5) {
+        if (neg) {
+            return -counter;
+        } else {
+            return counter;
+        }
     } else {
-        return neg ? -integerPart - 1 : integerPart + 1;
+        if (neg) {
+            return -counter - 1;
+        } else {
+            return counter + 1;
+        }
     }
 }
-function ceil(num) {
+
+function floor(int) {
     let neg = false;
-    if (num < 0) {
+    if (int < 0) {
         neg = true;
-        num = -num;
+        int = -int;
     }
-    
-    let integerPart = num - (num % 1);
-    let decimalPart = num % 1;
-    
-    if (decimalPart > 0) {
-        return neg ? -integerPart : integerPart + 1;
+    let intCopy = int;
+    let counter = 0;
+    while (!(intCopy < 1 && intCopy > -1)) {
+        intCopy -= 1;
+        counter++;
+    }
+    if (neg) {
+        return -counter - 1;
     } else {
-        return neg ? -integerPart : integerPart;
+        return counter;
     }
 }
-function floor(num) {
+
+function ceil(int) {
+    if (!int) return 0;
     let neg = false;
-    if (num < 0) {
+    if (int < 0) {
         neg = true;
-        num = -num;
+        int = -int;
     }
-    
-    let integerPart = num - (num % 1);
-    
-    return neg ? -integerPart - 1 : integerPart;
+    let intCopy = int;
+    let counter = 0;
+    while (!(intCopy < 1 && intCopy >= 0)) {
+        intCopy -= 1;
+        counter++;
+    }
+    if (neg) {
+        return -counter;
+    } else {
+        return counter + 1;
+    }
 }
-function trunc(num) {
-    let neg = false;
-    if (num < 0) {
-        neg = true;
-        num = -num;
+
+function trunc(int) {
+    let counter = 0;
+    if (int > 0xfffffffff) {
+        int -= 0xfffffffff;
+        counter += 0xfffffffff;
     }
-    
-    let integerPart = num - (num % 1);
-    
-    return neg ? -integerPart : integerPart;
+    let neg = false;
+    if (int < 0) {
+        neg = true;
+        int = -int;
+    }
+    let intCopy = int;
+    while (!(intCopy < 1 && intCopy > -1)) {
+        intCopy -= 1;
+        counter++;
+    }
+    if (neg) {
+        return -counter;
+    }
+    return counter;
 }
