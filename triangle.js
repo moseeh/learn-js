@@ -1,9 +1,12 @@
 function triangle(str, num) {
     let str1 = ""
     for (let i = 1; i <= num; i++) {
-        str1 += str.repeat(i) + '\n'
+        if (i !== num) {
+
+            str1 += str.repeat(i) + '\n'
+        } else {
+            str1 += str.repeat(i)
+        }
     }
     return str1
 }
-
-console.log(triangle("*", 6))
