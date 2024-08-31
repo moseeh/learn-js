@@ -10,8 +10,13 @@ function getURL(dataSet) {
     return dataSet.match(greedyRegex) || [];
   }
   
-  // Function to get URLs with at least 2 but not more than 3 query parameters
+  // Function to get URLs with exactly 2 or 3 query parameters
   function notSoGreedy(dataSet) {
-    const notSoGreedyRegex = /(https?:\/\/[^\s]+\?[^\s]+&[^\s]+(&[^\s]+)?(?!&))/g;
-    return dataSet.match(notSoGreedyRegex) || [];
+    const urls = getURL(dataSet);
+    return urls.filter(url => {
+      const queryParts = url.split('?')[1];
+      if (!queryParts) return false;
+      const paramCount = queryParts.split('&').length;
+      return paramCount === 2 || paramCount === 3;
+    });
   }
