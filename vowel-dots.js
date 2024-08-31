@@ -1,6 +1,6 @@
-function vowelDots(str) {
+const vowels = /[aeiou]/gi;
 
-    const vowels = /[aeiou]/g;
-    
-    return str.replace(vowels, match => match + '.');
-  }
+function vowelDots(str) {
+  // Replace each vowel with the vowel followed by a '.'
+  return str.replace(vowels, match => match + '.');
+}
