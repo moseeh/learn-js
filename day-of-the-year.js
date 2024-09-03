@@ -1,7 +1,12 @@
 function dayOfTheYear(date) {
-    const currentDate = new Date(date);
-    const startOfYear = new Date(currentDate.getFullYear(), 0, 0);
-    const diff = currentDate - startOfYear;
-    const oneDay = 1000 * 60 * 60 * 24; // milliseconds in a day
-    return Math.floor(diff / oneDay);
+    let days = date.getDate();
+    let currentMonth = date.getMonth();
+
+    while (currentMonth > 0) {
+        currentMonth--;
+        const tempDate = new Date(date.getFullYear(), currentMonth + 1, 0);
+        days += tempDate.getDate();
+    }
+
+    return days;
 }
