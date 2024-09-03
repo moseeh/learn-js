@@ -29,4 +29,5 @@ function isLastDayOfMonth(date) {
             return true
         } 
     }
+    return false 
 }
