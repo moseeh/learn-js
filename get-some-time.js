@@ -1,11 +1,12 @@
 function firstDayWeek(weekNumber, year) {
-    // Parse the year as an integer
+  
     const parsedYear = parseInt(year, 10);
   
-    // Ensure weekNumber is between 1 and 53
     weekNumber = Math.max(1, Math.min(53, weekNumber));
-  
-    // Function to create date, handling years below 100
+    if (weekNumber === 1) {
+        return `01-01-${String(parsedYear).padStart(4, '0')}`;
+    }
+
     function createDate(year, month, day) {
       const date = new Date(year, month, day);
       if (year < 100) {
@@ -13,8 +14,6 @@ function firstDayWeek(weekNumber, year) {
       }
       return date;
     }
-  
-    // Create a Date object for January 1st of the given year
     const januaryFirst = createDate(parsedYear, 0, 1);
   
     // Calculate the day of the week for January 1st (0 = Sunday, 1 = Monday, etc.)
@@ -44,4 +43,4 @@ function firstDayWeek(weekNumber, year) {
     return `${day}-${month}-${formattedYear}`;
 }
 
-console.log(firstDayWeek(36, "2024"))
+console.log(firstDayWeek(1, "1000"))
