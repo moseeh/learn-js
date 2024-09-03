@@ -1,9 +1,9 @@
 function isFriday(date) {
-    return new Date(date).getDate === 5
+    return new Date(date).getDay === 5
 }
 
 function isWeekend(date) {
-    return (new Date(date).getDate=== 0 || new Date(date).getDate === 6)
+    return (new Date(date).getDay=== 0 || new Date(date).getDay === 6)
 }
 
 function isLeapYear(date) {
