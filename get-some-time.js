@@ -28,7 +28,7 @@ function firstDayWeek(weekNumber, year) {
     const offsetToFirstMonday = (8 - dayOfWeekJanuaryFirst) % 7;
   
     // Calculate the date of the first day of the specified week
-    const firstDayOfWeek = createDate(parsedYear, 0, 1 + offsetToFirstMonday + (weekNumber - 1) * 7);
+    const firstDayOfWeek = createDate(parsedYear, 0, 1 + offsetToFirstMonday + (weekNumber - 2) * 7);
   
     // If the calculated date is in the previous year, return January 1st
     if (firstDayOfWeek.getFullYear() < parsedYear) {
@@ -43,4 +43,3 @@ function firstDayWeek(weekNumber, year) {
     return `${day}-${month}-${formattedYear}`;
 }
 
-console.log(firstDayWeek(1, "1000"))
