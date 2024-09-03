@@ -3,7 +3,10 @@ function isValid(date) {
     if (new Date(date).toString() === "Invalid Date") {
         return false;
     }
-    return date instanceof Date && !isNaN(date);
+    if (!(date instanceof Date) && typeof date !== "number") {
+        return false;
+    }
+    return true;
 }
 
 // Check if the first date is after the second date
