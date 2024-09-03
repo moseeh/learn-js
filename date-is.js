@@ -1,6 +1,9 @@
 // Check if a date is valid
 function isValid(date) {
-    return new Date(date) instanceof Date && !isNaN(new Date(date));
+    if (new Date(date).toString() === "Invalid Date") {
+        return false;
+    }
+    return date instanceof Date && !isNaN(date);
 }
 
 // Check if the first date is after the second date
