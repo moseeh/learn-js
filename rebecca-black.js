@@ -1,13 +1,13 @@
 function isFriday(date) {
-    return new Date(date).getDay === 5
+    return new Date(date).getDay() === 5
 }
 
 function isWeekend(date) {
-    return (new Date(date).getDay=== 0 || new Date(date).getDay === 6)
+    return (new Date(date).getDay()=== 0 || new Date(date).getDay() === 6)
 }
 
 function isLeapYear(date) {
-    return new Date(date).getFullYear %4 === 0
+    return new Date(date).getFullYear() %4 === 0
 }
 
 function isLastDayOfMonth(date) {
