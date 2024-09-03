@@ -4,12 +4,20 @@ function firstDayWeek(weekNumber, year) {
 
     // Create a Date object for January 1st of the given year
     const januaryFirst = new Date(parsedYear, 0, 1);
-
+   
+    
     // Calculate the day of the week for January 1st (0 = Sunday, 1 = Monday, etc.)
-    const dayOfWeekJanuaryFirst = januaryFirst.getDay() || 7;
+    let dayOfWeekJanuaryFirst = januaryFirst.getDay();
 
+    
+    // Adjust Sunday from 0 to 7
+    if (dayOfWeekJanuaryFirst === 0) {
+        dayOfWeekJanuaryFirst = 7;
+    }
+    
     // Calculate the offset (in days) to the first Monday of the year
-    const offsetToMonday = (dayOfWeekJanuaryFirst <= 1) ? 0 : 8 - dayOfWeekJanuaryFirst;
+    const offsetToMonday = dayOfWeekJanuaryFirst <= 1 ? 0 : 8 - dayOfWeekJanuaryFirst;
+ 
 
     // Calculate the day of the year for the first Monday
     const firstMondayDayOfYear = 1 + offsetToMonday;
