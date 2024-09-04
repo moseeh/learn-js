@@ -40,11 +40,17 @@ function trimTemp(arrobjects) {
     return arrobjects
 }
 
-function tempForecasts(forecasts) {
-    return forecasts.map(forecast => {
-      let fahrenheit = parseFloat(forecast.temperature.trim())
-      let celsius = ((fahrenheit - 32) * 5 / 9).toFixed(0)
-      let capitalizedState = forecast.state.charAt(0).toUpperCase() + forecast.state.slice(1)
-      return `${celsius}°Celsius in ${forecast.city}, ${capitalizedState}`;
+function tempForecasts(arr) {
+    return arr.map((item) => {
+        return `${
+            Math.floor(
+                (Number(item.temperature.slice(0, -2)) - 32) * (5 / 9)
+            ).toString() + "°Celsius"
+        } in ${item.city}, ${item.state
+            .split(" ")
+            .map((word) => {
+                return word[0].toUpperCase() + word.slice(1);
+            })
+            .join(" ")}`;
     });
-  }
+}
