@@ -40,13 +40,6 @@ function trimTemp(arrobjects) {
     return arrobjects
 }
 
-function tempForecasts(arrobjects) {
-    let arr = []
-    for (let i = 0; i< arrobjects.length; i++) {
-       
-    }
-}
-
 function tempForecasts(forecasts) {
     return forecasts.map(forecast => {
       let fahrenheit = parseFloat(forecast.temperature.trim())
