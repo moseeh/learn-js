@@ -41,22 +41,12 @@ function trimTemp(arrobjects) {
 }
 
 function tempForecasts(arr) {
-    // Trim and convert temperatures, capitalize states, and format the output.
     return arr.map((item) => {
-      // Trim temperature string
-      let temperature = item.temperature.trim();
-  
-      // Extract the numeric part of the temperature and convert to Celsius
-      let fahrenheit = parseFloat(temperature);
-      let celsius = ((fahrenheit - 32) * 5 / 9).toFixed(0);
-  
-      // Capitalize state name
-      let state = item.state
+      const celsius = Math.floor((parseFloat(item.temperature) - 32) * (5 / 9));
+      const formattedState = item.state
         .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => word[0].toUpperCase() + word.slice(1))
         .join(" ");
-  
-      // Format the final output string
-      return `${celsius}°Celsius in ${item.city}, ${state}`;
+      return `${celsius}°Celsius in ${item.city}, ${formattedState}`;
     });
-  }
+}
