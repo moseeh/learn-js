@@ -1,17 +1,31 @@
+// Helper function to select elements
+const select = (selector) => document.querySelectorAll(selector);
+const selectOne = (selector) => document.querySelector(selector);
+
 export function getArchitects() {
-    return [document.querySelectorAll('body a'), document.querySelectorAll('body span')]
+  return [
+    select('body a'),
+    select('body span')
+  ];
 }
 
 export function getClassical() {
-    return [document.querySelectorAll('a.classical'), document.querySelectorAll('a:not(.classical)')]
+  return [
+    select('a.classical'),
+    select('a:not(.classical)')
+  ];
 }
 
 export function getActive() {
-
-    return [document.querySelectorAll('a.classical.active'), document.querySelectorAll('a.classical:not(.active)')]
+  return [
+    select('a.classical.active'),
+    select('a.classical:not(.active)')
+  ];
 }
 
 export function getBonannoPisano() {
-    return [document.querySelector('#BonannoPisano'),document.querySelectorAll('a.classical.active')]
-
+  return [
+    selectOne('#BonannoPisano'),
+    select('a.classical.active')
+  ];
 }
