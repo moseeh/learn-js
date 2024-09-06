@@ -8,7 +8,7 @@ export function getClassical() {
 
 export function getActive() {
 
-    return [document.querySelector('a.classical.active'), document.querySelectorAll('a.classical:not(.active)')]
+    return [document.querySelectorAll('a.classical.active'), document.querySelectorAll('a.classical:not(.active)')]
 }
 
 export function getBonannoPisano() {
