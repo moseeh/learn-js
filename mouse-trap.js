@@ -1,5 +1,6 @@
 let lastCircle = null;
 let box = null;
+let hasEntered = false;
 
 export function createCircle() {
   document.addEventListener('click', (e) => {
@@ -10,19 +11,27 @@ export function createCircle() {
     circle.style.background = 'white';
     document.body.appendChild(circle);
     lastCircle = circle;
+    hasEntered = false;
   });
 }
 
 export function moveCircle() {
   document.addEventListener('mousemove', (e) => {
-    if (lastCircle) {
+    if (lastCircle && box) {
       const rect = box.getBoundingClientRect();
-      let x = e.clientX - 25;
-      let y = e.clientY - 25;
+      const circleRadius = 25;
+      let x = e.clientX - circleRadius;
+      let y = e.clientY - circleRadius;
 
-      if (isInsideBox(lastCircle, rect)) {
-        x = Math.max(rect.left + 1, Math.min(x, rect.right - 51));
-        y = Math.max(rect.top + 1, Math.min(y, rect.bottom - 51));
+      const isInside = isInsideBox(x, y, rect, circleRadius);
+
+      if (isInside) {
+        hasEntered = true;
+      }
+
+      if (hasEntered) {
+        x = Math.max(rect.left + circleRadius, Math.min(x, rect.right - circleRadius));
+        y = Math.max(rect.top + circleRadius, Math.min(y, rect.bottom - circleRadius));
         lastCircle.style.background = 'var(--purple)';
       } else {
         lastCircle.style.background = 'white';
@@ -40,12 +49,11 @@ export function setBox() {
   document.body.appendChild(box);
 }
 
-function isInsideBox(circle, boxRect) {
-  const circleRect = circle.getBoundingClientRect();
+function isInsideBox(x, y, boxRect, circleRadius) {
   return (
-    circleRect.left >= boxRect.left + 1 &&
-    circleRect.right <= boxRect.right - 1 &&
-    circleRect.top >= boxRect.top + 1 &&
-    circleRect.bottom <= boxRect.bottom - 1
+    x >= boxRect.left + circleRadius &&
+    x <= boxRect.right - circleRadius &&
+    y >= boxRect.top + circleRadius &&
+    y <= boxRect.bottom - circleRadius
   );
 }
