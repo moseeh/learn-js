@@ -1,107 +1,105 @@
-import { gossips as initialGossips } from './gossip-grid.data.js'
+import { gossips as initialGossips } from "./gossip-grid.data.js";
 
 export function grid() {
-  let gossips = [...initialGossips]
-  const body = document.body
+    let gossips = [...initialGossips];
 
-  // Create ranges
-  const ranges = createRanges()
-  body.appendChild(ranges)
+    // Create ranges
+    const ranges = createRanges();
+    document.body.appendChild(ranges);
 
-  // Create form for new gossips
-  const form = createGossipForm()
-  body.appendChild(form)
+    // Create form for new gossips
+    const form = createGossipForm();
+    document.body.appendChild(form);
 
-  // Display initial gossips
-  gossips.forEach(displayGossip)
+    // Render initial gossips
+    renderGossips();
 
-  function createRanges() {
-    const rangesDiv = document.createElement('div')
-    rangesDiv.className = 'ranges'
+    function createRanges() {
+        const rangesDiv = document.createElement('div');
+        rangesDiv.className = 'ranges';
 
-    const rangeInputs = [
-      { id: 'width', min: 200, max: 800, value: 250, label: 'Width' },
-      { id: 'fontSize', min: 20, max: 40, value: 20, label: 'Font Size' },
-      { id: 'background', min: 20, max: 75, value: 50, label: 'Background' }
-    ]
+        const widthRange = createRange('width', 200, 800, 400, 'Width', (value) => {
+            document.querySelectorAll('.gossip').forEach(card => card.style.width = value + 'px');
+        });
 
-    rangeInputs.forEach(input => {
-      const range = createRange(input)
-      rangesDiv.appendChild(range)
-    })
+        const fontSizeRange = createRange('fontSize', 20, 40, 30, 'Font Size', (value) => {
+            document.querySelectorAll('.gossip').forEach(card => card.style.fontSize = value + 'px');
+        });
 
-    return rangesDiv
-  }
+        const backgroundRange = createRange('background', 20, 75, 50, 'Background', (value) => {
+            document.querySelectorAll('.gossip').forEach(card => card.style.backgroundColor = `hsl(280, 50%, ${value}%)`);
+        });
 
-  function createRange({ id, min, max, value, label }) {
-    const rangeDiv = document.createElement('div')
-    rangeDiv.className = 'range'
+        rangesDiv.append(widthRange, fontSizeRange, backgroundRange);
+        return rangesDiv;
+    }
 
-    const labelElem = document.createElement('label')
-    labelElem.htmlFor = id
-    labelElem.textContent = label
+    function createRange(id, min, max, value, label, onChange) {
+        const rangeDiv = document.createElement('div');
+        rangeDiv.className = 'range';
 
-    const input = document.createElement('input')
-    input.type = 'range'
-    input.id = id
-    input.min = min
-    input.max = max
-    input.value = value
-    input.className = 'range'
+        const input = document.createElement('input');
+        input.type = 'range';
+        input.id = id;
+        input.min = min;
+        input.max = max;
+        input.value = value;
 
-    const span = document.createElement('span')
-    span.textContent = value
+        const labelElem = document.createElement('label');
+        labelElem.htmlFor = id;
+        labelElem.textContent = label;
 
-    rangeDiv.append(labelElem, input, span)
+        const span = document.createElement('span');
+        span.textContent = value;
 
-    input.addEventListener('input', () => {
-      span.textContent = input.value
-      updateStyles()
-    })
+        rangeDiv.append(labelElem, input, span);
 
-    return rangeDiv
-  }
+        input.addEventListener('input', (e) => {
+            span.textContent = e.target.value;
+            onChange(e.target.value);
+        });
 
-  function createGossipForm() {
-    const gossipForm = document.createElement('form')
-    gossipForm.className = 'gossip'
+        return rangeDiv;
+    }
 
-    const textarea = document.createElement('textarea')
-    textarea.placeholder = 'Got a gossip to share?'
+    function createGossipForm() {
+        const gossipForm = document.createElement('form');
+        gossipForm.className = 'gossip';
 
-    const button = document.createElement('button')
-    button.textContent = 'Share gossip!'
+        const textarea = document.createElement('textarea');
+        textarea.placeholder = 'Got a gossip to share?';
 
-    gossipForm.append(textarea, button)
+        const button = document.createElement('button');
+        button.textContent = 'Share gossip!';
+        button.type = 'submit';
 
-    gossipForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      if (textarea.value.trim()) {
-        displayGossip(textarea.value)
-        gossips.unshift(textarea.value)
-        textarea.value = ''
-      }
-    })
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            let gossip = textarea.value;
+            if (gossip.trim()) {
+                gossips.unshift(gossip);
+                textarea.value = "";
+                rerenderGossips();
+            }
+        });
 
-    return gossipForm
-  }
+        gossipForm.append(textarea, button);
+        return gossipForm;
+    }
 
-  function displayGossip(text) {
-    const gossip = document.createElement('div')
-    gossip.className = 'gossip fade-in'
-    gossip.textContent = text
-    body.insertBefore(gossip, form.nextSibling)  // Insert after the form
-  }
-  
-  function updateStyles() {
-    const width = document.getElementById('width').value
-    const fontSize = document.getElementById('fontSize').value
-    const background = document.getElementById('background').value
+    function renderGossips() {
+        gossips.forEach(displayGossip);
+    }
 
-    document.querySelectorAll('.gossip').forEach(gossip => {
-      gossip.style.width = `${width}px`
-      gossip.style.fontSize = `${fontSize}px`
-      gossip.style.background = `hsl(280, 50%, ${background}%)`
-    })
-  }
+    function rerenderGossips() {
+        document.querySelectorAll(".gossip:not(form)").forEach((gossip) => gossip.remove());
+        renderGossips();
+    }
+
+    function displayGossip(gossip) {
+        const gossipDiv = document.createElement('div');
+        gossipDiv.className = 'gossip fade-in';
+        gossipDiv.textContent = gossip;
+        document.body.appendChild(gossipDiv);
+    }
 }
