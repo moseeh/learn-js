@@ -21,10 +21,24 @@ function explore() {
 
 function createSection(place) {
     const section = document.createElement("section");
-    section.style.background = `url('./where-do-we-go_images/${place.name.toLowerCase().replace(/ /g, "-")}.jpg') center/cover no-repeat`;
+    const imageUrl = `./where-do-we-go_images/${place.name.toLowerCase().replace(/ /g, "-")}.jpg`;
+
+    // Check if the image exists
+    const img = new Image();
+    img.src = imageUrl;
+
+    img.onload = function () {
+        section.style.background = `url('${imageUrl}') center/cover no-repeat`;
+    };
+
+    img.onerror = function () {
+        section.style.background = `url('./default-image.jpg') center/cover no-repeat`; // fallback image
+    };
+
     section.style.height = "100vh";
     document.body.appendChild(section);
 }
+
 
 function selectPlace() {
     const index = Math.floor((window.scrollY + window.innerHeight / 2) / window.innerHeight);
