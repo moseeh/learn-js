@@ -2,10 +2,10 @@ export function compose() {
   document.addEventListener('keydown', handleKeyPress);
 
   function handleKeyPress(event) {
-    const key = event.key.toLowerCase();
+    event.preventDefault(); // Prevent default for all keys
 
-    if (key >= 'a' && key <= 'z') {
-      createNote(key);
+    if (event.key.length === 1 && event.key.match(/[a-z]/i)) {
+      createNote(event.key.toLowerCase());
     } else if (event.key === 'Backspace') {
       deleteLastNote();
     } else if (event.key === 'Escape') {
@@ -29,8 +29,7 @@ export function compose() {
   }
 
   function clearAllNotes() {
-    const notes = document.querySelectorAll('.note');
-    notes.forEach(note => note.remove());
+    document.body.innerHTML = '';
   }
 
   function generateColor(key) {
