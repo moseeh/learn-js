@@ -22,21 +22,23 @@ let isRemoving = false;
 export function pimp() {
   const button = document.querySelector('.button');
   
-  if (isRemoving) {
-    if (currentIndex > 0) {
-      button.classList.remove(styles[currentIndex]);
-      currentIndex--;
-    } else {
-      button.classList.remove(styles[0], 'unpimp');
-      isRemoving = false;
-    }
-  } else {
+  if (!isRemoving) {
     if (currentIndex < styles.length - 1) {
       currentIndex++;
       button.classList.add(styles[currentIndex]);
-    } else {
-      button.classList.add('unpimp');
+    } 
+    if (currentIndex === styles.length - 1) {
       isRemoving = true;
+      button.classList.add('unpimp');
+    }
+  } else {
+    if (currentIndex >= 0) {
+      button.classList.remove(styles[currentIndex]);
+      currentIndex--;
+    }
+    if (currentIndex === -1) {
+      isRemoving = false;
+      button.classList.remove('unpimp');
     }
   }
 }
