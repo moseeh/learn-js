@@ -90,9 +90,9 @@ export function grid() {
     const gossip = document.createElement('div')
     gossip.className = 'gossip fade-in'
     gossip.textContent = text
-    body.appendChild(gossip)
+    body.insertBefore(gossip, form.nextSibling)  // Insert after the form
   }
-
+  
   function updateStyles() {
     const width = document.getElementById('width').value
     const fontSize = document.getElementById('fontSize').value
