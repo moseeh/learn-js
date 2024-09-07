@@ -23,15 +23,15 @@ export function moveCircle() {
       let x = e.clientX - circleRadius;
       let y = e.clientY - circleRadius;
 
-      const isInside = isInsideBox(x, y, rect, circleRadius);
+      const isInside = isInsideBox(x + circleRadius, y + circleRadius, rect, circleRadius);
 
       if (isInside) {
         hasEntered = true;
       }
 
       if (hasEntered) {
-        x = Math.max(rect.left + circleRadius, Math.min(x, rect.right - circleRadius));
-        y = Math.max(rect.top + circleRadius, Math.min(y, rect.bottom - circleRadius));
+        x = Math.max(rect.left + 1, Math.min(x, rect.right - circleRadius * 2 - 1));
+        y = Math.max(rect.top + 1, Math.min(y, rect.bottom - circleRadius * 2 - 1));
         lastCircle.style.background = 'var(--purple)';
       } else {
         lastCircle.style.background = 'white';
@@ -51,9 +51,9 @@ export function setBox() {
 
 function isInsideBox(x, y, boxRect, circleRadius) {
   return (
-    x >= boxRect.left + circleRadius &&
-    x <= boxRect.right - circleRadius &&
-    y >= boxRect.top + circleRadius &&
-    y <= boxRect.bottom - circleRadius
+    x > boxRect.left + circleRadius &&
+    x < boxRect.right - circleRadius &&
+    y > boxRect.top + circleRadius &&
+    y < boxRect.bottom - circleRadius
   );
 }
