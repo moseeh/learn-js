@@ -1,26 +1,29 @@
 function pick(obj, str) {
-    let newobj = {}
+    let newObj = {};
+    
+    // Ensure str is always an array
+    const keysToPick = Array.isArray(str) ? str : [str];
+
     for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            if (str.includes(key)) {
-                newobj[key] = obj[key]
-            }
+        if (obj.hasOwnProperty(key) && keysToPick.includes(key)) {
+            newObj[key] = obj[key];
         }
     }
-    return newobj
+    
+    return newObj;
 }
 
 function omit(obj, str) {
-    let newobj = {}
+    let newObj = {};
+
+    // Ensure str is always an array
+    const keysToOmit = Array.isArray(str) ? str : [str];
+
     for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            if (Array.isArray(str) &&!str.includes(key)) {
-                newobj[key] = obj[key]
-            }
-            if (typeof str === "string" && str !== key) {
-                newobj[key] = obj[key]
-            }
+        if (obj.hasOwnProperty(key) && !keysToOmit.includes(key)) {
+            newObj[key] = obj[key];
         }
     }
-    return newobj
+    
+    return newObj;
 }
