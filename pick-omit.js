@@ -10,7 +10,7 @@ function pick(obj, str) {
     return newobj
 }
 
-function pomit(obj, str) {
+function omit(obj, str) {
     let newobj = {}
     for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
