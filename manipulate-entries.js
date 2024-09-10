@@ -32,7 +32,7 @@ const cartTotal = (cart) => {
     const scaledNutrition = Object.fromEntries(
       Object.entries(itemNutrition).map(([nutrient, value]) => [
         nutrient,
-        (value * grams / 100).toFixed(3)
+        Number((value * grams / 100).toFixed(3))
       ])
     );
     return [item, scaledNutrition];
