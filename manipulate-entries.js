@@ -1,23 +1,23 @@
-const filterEntries = (obj, func) => {
+const filterEntries = (obj, predicate) => {
   return Object.fromEntries(
-    Object.entries(obj).filter(entry => func(entry))
+    Object.entries(obj).filter(entry => predicate(entry))
   );
 };
 
-const mapEntries = (obj, func) => {
+const mapEntries = (obj, mapper) => {
   return Object.fromEntries(
-    Object.entries(obj).map(entry => func(entry))
+    Object.entries(obj).map(entry => mapper(entry))
   );
 };
 
-const reduceEntries = (obj, func, initialValue) => {
-  return Object.entries(obj).reduce((acc, entry) => func(acc, entry), initialValue);
+const reduceEntries = (obj, reducer, initialValue) => {
+  return Object.entries(obj).reduce((acc, entry) => reducer(acc, entry), initialValue);
 };
 
 const totalCalories = (cart) => {
-  return reduceEntries(cart, (total, [item, grams]) => {
+  return Number(reduceEntries(cart, (total, [item, grams]) => {
     return total + (nutritionDB[item].calories * grams / 100);
-  }, 0);
+  }, 0).toFixed(1));
 };
 
 const lowCarbs = (cart) => {
