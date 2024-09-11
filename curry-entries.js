@@ -25,3 +25,16 @@ function reduceCurry(fn) {
     return Object.entries(obj).reduce((acc, entry) => fn(acc, entry), initialValue);
   };
 }
+
+function reduceScore(personnel) {
+  return reduceCurry((acc, [k, v]) => v.isForceUser ? acc + v.shootingScore : acc)(personnel, 0);
+}
+
+function filterForce(personnel) {
+  return filterCurry(([k, v]) => v.isForceUser && v.shootingScore >= 80)(personnel);
+}
+
+function mapAverage(personnel) {
+  return mapCurry(([k, v]) => [k, { ...v, averageScore: (v.pilotingScore + v.shootingScore) / 2 }])(personnel);
+}
+
