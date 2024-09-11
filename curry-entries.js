@@ -27,7 +27,7 @@ function reduceCurry(fn) {
 }
 
 function reduceScore(personnel, initialValue = 0) {
-    return reduceCurry((acc, [k, v]) => v.isForceUser ? acc + v.shootingScore : acc)(personnel, initialValue);
+    return reduceCurry((acc, [k, v]) => v.isForceUser ? acc + v.shootingScore + v.pilotingScore : acc)(personnel, initialValue);
   }
   
 
