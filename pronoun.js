@@ -7,17 +7,19 @@ function pronoun(str) {
 
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
-    if (pronouns.includes(word)) {
-      if (!result[word]) {
-        result[word] = { word: [], count: 0 };
+    const cleanWord = word.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ");
+
+    if (pronouns.includes(cleanWord)) {
+      if (!result[cleanWord]) {
+        result[cleanWord] = { word: [], count: 0 };
       }
-      result[word].count++;
+      result[cleanWord].count++;
 
       // Check for the next word
       if (i < words.length - 1) {
-        const nextWord = words[i + 1];
-        if (!result[word].word.includes(nextWord)) {
-          result[word].word.push(nextWord);
+        const nextWord = words[i + 1].replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ");
+        if (nextWord && !result[cleanWord].word.includes(nextWord)) {
+          result[cleanWord].word.push(nextWord);
         }
       }
     }
@@ -32,3 +34,4 @@ function pronoun(str) {
 
   return result;
 }
+
