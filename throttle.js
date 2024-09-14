@@ -21,35 +21,37 @@ function throttle(func, wait) {
     };
 }
 
-
-
 function opThrottle(func, wait, options = {}) {
     let timeout = null;
-    let previous = 0;
+    let previous = 0;  // Tracks the last time the function was executed
     let result;
-
+  
     const later = (context, args) => {
-        previous = options.leading === false ? 0 : Date.now();
-        timeout = null;
-        result = func.apply(context, args);
+        previous = options.leading === false ? 0 : Date.now();  // Reset previous for next calls
+        timeout = null;  // Reset timeout
+        result = func.apply(context, args);  // Call the function
     };
-
+  
     return function throttled(...args) {
         const now = Date.now();
-        if (!previous && options.leading === false) previous = now;
-        const remaining = wait - (now - previous);
 
+        if (!previous && options.leading === false) previous = now;  // If not leading, set previous
+
+        const remaining = wait - (now - previous);  // Time remaining before the next allowed execution
+  
+        // If time has elapsed or we're beyond the wait time window
         if (remaining <= 0 || remaining > wait) {
             if (timeout) {
                 clearTimeout(timeout);
                 timeout = null;
             }
-            previous = now;
+            previous = now;  // Update the last execution time
             result = func.apply(this, args);
         } else if (!timeout && options.trailing !== false) {
+            // Schedule a trailing function call if there’s no timeout and trailing is enabled
             timeout = setTimeout(() => later(this, args), remaining);
         }
-
+  
         return result;
     };
 }
