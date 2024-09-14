@@ -5,18 +5,22 @@ function throttle(func, wait) {
     return function executed(...args) {
         const now = Date.now();
 
-        if (now - lastCall < wait) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                lastCall = now;
-                func.apply(this, args);
-            }, wait - (now - lastCall));
-        } else {
+        if (now - lastCall >= wait) {
+            // If the wait time has passed, invoke the function immediately
             lastCall = now;
             func.apply(this, args);
+        } else if (!timeout) {
+            // If still within the wait period, set a timeout to invoke the function after the remaining time
+            const remainingTime = wait - (now - lastCall);
+            timeout = setTimeout(() => {
+                lastCall = Date.now();
+                func.apply(this, args);
+                timeout = null; // Reset the timeout after it executes
+            }, remainingTime);
         }
     };
 }
+
 
 
 function opThrottle(func, wait, options = {}) {
