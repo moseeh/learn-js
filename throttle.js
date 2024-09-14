@@ -23,35 +23,42 @@ function throttle(func, wait) {
 
 function opThrottle(func, wait, options = {}) {
     let timeout = null;
-    let previous = 0;  // Tracks the last time the function was executed
+    let lastArgs = null;  // Store the last arguments to be used at the trailing edge
+    let previous = 0;  // Track the last execution time
     let result;
-  
+
     const later = (context, args) => {
-        previous = options.leading === false ? 0 : Date.now();  // Reset previous for next calls
-        timeout = null;  // Reset timeout
-        result = func.apply(context, args);  // Call the function
+        timeout = null;  // Clear the timeout
+        if (lastArgs) {
+            // If there were calls during the throttle period, execute at the trailing edge
+            previous = options.leading === false ? 0 : Date.now();
+            result = func.apply(context, lastArgs);
+            lastArgs = null;  // Reset lastArgs after execution
+        }
     };
-  
+
     return function throttled(...args) {
         const now = Date.now();
 
-        if (!previous && options.leading === false) previous = now;  // If not leading, set previous
+        // If leading is false and previous is not set, set previous to now
+        if (!previous && options.leading === false) previous = now;
 
-        const remaining = wait - (now - previous);  // Time remaining before the next allowed execution
-  
-        // If time has elapsed or we're beyond the wait time window
+        const remaining = wait - (now - previous);
+
+        // If it's time to execute the function
         if (remaining <= 0 || remaining > wait) {
             if (timeout) {
-                clearTimeout(timeout);
+                clearTimeout(timeout);  // Clear any pending trailing calls
                 timeout = null;
             }
             previous = now;  // Update the last execution time
             result = func.apply(this, args);
         } else if (!timeout && options.trailing !== false) {
-            // Schedule a trailing function call if there’s no timeout and trailing is enabled
+            // Schedule the trailing execution
+            lastArgs = args;  // Save the arguments for trailing call
             timeout = setTimeout(() => later(this, args), remaining);
         }
-  
+
         return result;
     };
 }
