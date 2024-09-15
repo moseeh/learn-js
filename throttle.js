@@ -1,54 +1,35 @@
 function throttle(fn, delay) {
     let last = 0;
-    return function (...args) {
-        const now = Date.now();
+    return function () {
+        const now = +new Date();
         if (now - last > delay) {
-            fn.apply(this, args);
+            fn.apply(this, arguments);
             last = now;
         }
     };
 }
 
-function opThrottle(fn, delay, { leading = true, trailing = true } = {}) {
+function opThrottle(fn, delay, { leading = false, trailing = true } = {}) {
     let last = 0;
     let timer = null;
-    let lastArgs = null;
-    let result;
-
-    const invoke = (context, args) => {
-        result = fn.apply(context, args);
-        last = Date.now();
-    };
-
-    return function (...args) {
-        const now = Date.now();
-        
+    return function () {
+        const now = +new Date();
         if (!last && leading === false) {
             last = now;
         }
-        
-        const remaining = delay - (now - last);
-        
-        if (remaining <= 0 || remaining > delay) {
+        if (now - last > delay) {
             if (timer) {
                 clearTimeout(timer);
                 timer = null;
             }
-            invoke(this, args);
-            lastArgs = null;
-        } else {
-            lastArgs = args;
-            if (!timer && trailing !== false) {
-                timer = setTimeout(() => {
-                    if (lastArgs) {
-                        invoke(this, lastArgs);
-                        lastArgs = null;
-                    }
-                    timer = null;
-                }, remaining);
-            }
+            fn.apply(this, arguments);
+            last = now;
+        } else if (!timer && trailing !== false) {
+            timer = setTimeout(() => {
+                fn.apply(this, arguments);
+                last = +new Date();
+                timer = null;
+            }, delay);
         }
-
-        return result;
     };
 }
