@@ -12,6 +12,14 @@ function throttle(fn, delay) {
 function opThrottle(fn, delay, { leading = true, trailing = true } = {}) {
     let last = 0;
     let timer = null;
+    let lastArgs = null;
+    let result;
+
+    const invoke = (context, args) => {
+        result = fn.apply(context, args);
+        last = Date.now();
+    };
+
     return function (...args) {
         const now = Date.now();
         
@@ -26,14 +34,21 @@ function opThrottle(fn, delay, { leading = true, trailing = true } = {}) {
                 clearTimeout(timer);
                 timer = null;
             }
-            fn.apply(this, args);
-            last = now;
-        } else if (!timer && trailing !== false) {
-            timer = setTimeout(() => {
-                fn.apply(this, args);
-                last = Date.now();
-                timer = null;
-            }, remaining);
+            invoke(this, args);
+            lastArgs = null;
+        } else {
+            lastArgs = args;
+            if (!timer && trailing !== false) {
+                timer = setTimeout(() => {
+                    if (lastArgs) {
+                        invoke(this, lastArgs);
+                        lastArgs = null;
+                    }
+                    timer = null;
+                }, remaining);
+            }
         }
+
+        return result;
     };
 }
