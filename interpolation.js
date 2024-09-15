@@ -1,16 +1,25 @@
-function interpolation({ step, start, end, callback, duration }) {
+function interpolation({
+  step = 0,
+  start = 0,
+  end = 0,
+  callback = () => {},
+  duration = 0
+} = {}) {
   const stepSize = (end - start) / step;
-  
-  const interpolate = (currentStep) => {
+  let currentValue = start;
+  let currentStep = 0;
+
+  const intervalId = setInterval(() => {
     if (currentStep < step) {
-      const x = currentStep / (step - 1); // Normalize distance to [0, 1]
-      const y = start + currentStep * stepSize;
+      const x = currentValue;
+      const y = (duration / step) * (currentStep + 1);
       
       callback([x, y]);
       
-      setTimeout(() => interpolate(currentStep + 1), duration / step);
+      currentValue += stepSize;
+      currentStep++;
+    } else {
+      clearInterval(intervalId);
     }
-  };
-  
-  setTimeout(() => interpolate(0), 0);
+  }, duration / step);
 }
