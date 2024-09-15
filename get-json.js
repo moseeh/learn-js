@@ -16,9 +16,9 @@ async function getJSON(path = '', params = {}) {
 
   const res = await response.json();
 
-  // Check if API returned an error
+  // If API returned an error, throw it directly
   if (res.error) {
-    throw new Error(`API Error: ${res.error}`);
+    throw new Error(res.error);
   }
 
   return res.data;  // Return the data
