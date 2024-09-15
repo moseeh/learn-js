@@ -3,13 +3,13 @@ async function getJSON(path = '', params = {}) {
   const url = `${path}?${Object.keys(params)
     .map(
       (key) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
+        `${encodeURIComponent(key)}=${encodeURIComponent(params[key]).replace(/%20/g, '+')}`
     )
     .join('&')}`;
 
   // Fetch the URL and handle response
   const response = await fetch(url);
-  
+
   if (!response.ok) {
     throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
   }
