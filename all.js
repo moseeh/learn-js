@@ -1,10 +1,10 @@
-function all(obj) {
+async function all(objs = {}) {
+  if (Object.keys(objs).length === 0) return {};
 
-    const entries = Object.entries(obj);
-    const keys = entries.map(([key]) => key);
-    const values = entries.map(([_, value]) => value);
-    return Promise.all(values).then(resolvedValues => {
+  const entries = Object.entries(objs);
+  const resolvedEntries = await Promise.all(
+    entries.map(async ([key, value]) => [key, await value])
+  );
 
-      return Object.fromEntries(keys.map((key, index) => [key, resolvedValues[index]]));
-    });
-  }
+  return Object.fromEntries(resolvedEntries);
+}
