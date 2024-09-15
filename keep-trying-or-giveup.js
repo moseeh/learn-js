@@ -1,28 +1,32 @@
-function retry(count, callback) {
-  return async function(...args) {
-    let attempts = 0;
-    while (attempts <= count) {
-      try {
-        return await callback(...args);
-      } catch (error) {
-        attempts++;
-        if (attempts > count) {
-          throw new Error('Max retries reached');
-        }
+function retry(count = 3, callback = async () => {}) {
+  return async function (...args) {
+    try {
+      const result = await callback(...args);
+      return result;
+    } catch (error) {
+      if (count > 0) {
+        return retry(count - 1, callback)(...args);
+      } else {
+        throw error;
       }
     }
   };
 }
 
-function timeout(delay, callback) {
-  return async function(...args) {
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('timeout')), delay);
-    });
-
-    return Promise.race([
-      callback(...args),
-      timeoutPromise
-    ]);
+function timeout(delay = 0, callback = async () => {}) {
+  return async function (...args) {
+    const timeoutPromise = new Promise((resolve) =>
+      setTimeout(() => resolve(new Error('timeout')), delay)
+    );
+    const functionCall = new Promise((resolve) =>
+      resolve(callback(...args))
+    );
+    
+    const result = await Promise.race([timeoutPromise, functionCall]);
+    
+    if (result instanceof Error) {
+      throw result;
+    }
+    return result;
   };
 }
