@@ -8,19 +8,15 @@ async function queryServers(serverName, q) {
 async function gougleSearch(q) {
   const servers = ['web', 'image', 'video'];
   
-  const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error('timeout')), 80);
-  });
-  
-  const searchPromise = Promise.all(
-    servers.map(async server => {
-      const result = await queryServers(server, q);
-      return [server, result];
-    })
-  ).then(Object.fromEntries);
+  const searchPromises = servers.map(server => queryServers(server, q));
   
   try {
-    return await Promise.race([searchPromise, timeoutPromise]);
+    const results = await Promise.all(searchPromises.map(p => Promise.race([
+      p,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 80))
+    ])));
+    
+    return Object.fromEntries(servers.map((server, index) => [server, results[index]]));
   } catch (error) {
     if (error.message === 'timeout') {
       return error;
