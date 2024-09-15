@@ -1,26 +1,29 @@
 async function queryServers(serverName, q) {
-  const mainServer = getJSON(`/${serverName}?q=${q}`);
-  const backupServer = getJSON(`/${serverName}_backup?q=${q}`);
-  
-  return Promise.race([mainServer, backupServer]);
+    const url = `/${serverName}?q=${q}`;
+    const backupUrl = `/${serverName}_backup?q=${q}`;
+    return Promise.race([
+        getJSON(url),
+        getJSON(backupUrl)
+    ]);
 }
 
 async function gougleSearch(q) {
-  const servers = ['web', 'image', 'video'];
-  
-  const searchPromises = servers.map(server => queryServers(server, q));
-  
-  try {
-    const results = await Promise.all(searchPromises.map(p => Promise.race([
-      p,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 80))
-    ])));
-    
-    return Object.fromEntries(servers.map((server, index) => [server, results[index]]));
-  } catch (error) {
-    if (error.message === 'timeout') {
-      return error;
+    const servers = ['web', 'image', 'video'];
+    const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 80)
+    );
+
+    try {
+        const results = await Promise.race([
+            Promise.all(servers.map(server => queryServers(server, q))),
+            timeout
+        ]);
+
+        return Object.fromEntries(servers.map((server, index) => [server, results[index]]));
+    } catch (error) {
+        if (error.message === 'timeout') {
+            throw error;
+        }
+        throw error;
     }
-    throw error;
-  }
 }
