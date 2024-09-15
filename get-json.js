@@ -1,4 +1,4 @@
-async function getJSON(path = '', params = {}) {
+async function getJSON(path, params = {}) {
   // Build the URL with query parameters
   const url = `${path}?${Object.keys(params)
     .map(
@@ -7,19 +7,22 @@ async function getJSON(path = '', params = {}) {
     )
     .join('&')}`;
 
-  // Fetch the URL and handle response
+  // Fetch the URL and handle the response
   const response = await fetch(url);
 
+  // Throw an error if the response is not OK, using only the status text
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
+    throw new Error(response.statusText);  // Only throw statusText
   }
 
+  // Parse the JSON body
   const res = await response.json();
 
-  // If API returned an error, throw it directly
+  // If the response contains an "error" property, throw the error
   if (res.error) {
     throw new Error(res.error);
   }
 
-  return res.data;  // Return the data
+  // Otherwise, return the "data" property
+  return res.data;
 }
