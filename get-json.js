@@ -1,38 +1,25 @@
-async function getJSON(path, params = {}) {
-  try {
-    // Check if the path is a valid full URL or a relative path
-    const url = path.startsWith('http') ? new URL(path) : new URL(path, 'http://localhost');
+async function getJSON(path = '', params = {}) {
+  // Build the URL with query parameters
+  const url = `${path}?${Object.keys(params)
+    .map(
+      (key) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
+    )
+    .join('&')}`;
 
-    // Append query parameters
-    Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
-
-    // Make the request
-    const response = await fetch(url);
-
-    // Check for response status
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
-    }
-
-    // Parse the JSON response
-    let jsonData;
-    try {
-      jsonData = await response.json();
-    } catch (e) {
-      throw new Error("Failed to parse JSON response");
-    }
-
-    // Handle API errors or missing data
-    if (jsonData.error) {
-      throw new Error(`API Error: ${jsonData.error}`);
-    }
-    if (jsonData.data) {
-      return jsonData.data;
-    } else {
-      throw new Error("Invalid response format: No 'data' field in JSON");
-    }
-  } catch (error) {
-    console.error("Error in getJSON:", error);
-    throw error;
+  // Fetch the URL and handle response
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
   }
+
+  const res = await response.json();
+
+  // Check if API returned an error
+  if (res.error) {
+    throw new Error(`API Error: ${res.error}`);
+  }
+
+  return res.data;  // Return the data
 }
