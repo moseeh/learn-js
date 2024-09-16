@@ -1,5 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let arg = process.argv[2] || process.argv[1];
 
@@ -9,14 +13,12 @@ async function saidYes(filePath) {
     const jsonData = JSON.parse(data);
     return jsonData.answer === "yes";
   } catch (error) {
-    // If the file doesn't exist or can't be read, we'll just return false
     return false;
   }
 }
 
 async function main() {
   try {
-    // Check if the directory exists
     await fs.access(arg);
     
     const data = await fs.readdir(arg, "utf8");
@@ -40,26 +42,27 @@ async function main() {
       output += `${index + 1}. ${name}\n`;
     });
 
-    // Remove the trailing newline
     output = output.trim();
 
     console.log(output);
-    return output;  // Return the output for testing purposes
+    return output;
 
   } catch (error) {
     if (error.code === 'ENOENT') {
-      // Directory doesn't exist, return an empty string
       return '';
     }
     console.error("An error occurred:", error);
-    throw error;  // Re-throw the error for the test to catch
+    throw error;
   }
 }
 
-// Only run main if this script is run directly (not imported)
-if (require.main === module) {
-  main().catch(error => console.error("An error occurred:", error));
+// Use top-level await instead of IIFE
+if (import.meta.url === `file://${__filename}`) {
+  try {
+    await main();
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
 }
 
-// Export main for testing purposes
 export { main };
