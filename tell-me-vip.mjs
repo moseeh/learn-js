@@ -1,10 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
-let arg = process.argv[2];
-if (arg === undefined) {
-  arg = process.argv[1];
-}
+let arg = process.argv[2] || process.argv[1];
 
 async function saidYes(filePath) {
   try {
@@ -18,23 +15,30 @@ async function saidYes(filePath) {
 }
 
 async function main() {
-  const data = await fs.readdir(arg, "utf8");
-  let arr = [];
+  try {
+    const data = await fs.readdir(arg, "utf8");
+    const jsonFiles = data.filter(file => path.extname(file).toLowerCase() === '.json');
 
-  for (let i = 0; i <= data.length - 1; i++) {
-    const filePath = path.join(arg, data[i]);
-    if (await saidYes(filePath)) {
-      let s = data[i].replace(/\.json$/, "");
-      let a = s.split("_");
-      arr.push(a[1] + " " + a[0]);
-    }
-  }
+    const results = await Promise.all(
+      jsonFiles.map(async (file) => {
+        const filePath = path.join(arg, file);
+        if (await saidYes(filePath)) {
+          let s = file.replace(/\.json$/, "");
+          let [lastName, firstName] = s.split("_");
+          return `${firstName} ${lastName}`;
+        }
+        return null;
+      })
+    );
 
-  arr.sort();
+    const arr = results.filter(Boolean).sort();
 
-  for (let i = 0; i <= arr.length - 1; i++) {
-    console.log(String(i + 1) + ". " + arr[i]);
+    arr.forEach((name, index) => {
+      console.log(`${index + 1}. ${name}`);
+    });
+  } catch (error) {
+    console.error("An error occurred:", error);
   }
 }
 
-main().catch(error => console.error("An error occurred:", error));
+main();
