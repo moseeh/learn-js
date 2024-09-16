@@ -10,6 +10,5 @@ for (let i = 0; i <= arr.length - 1; i++) {
 }
 let s = arr1.join(" ");
 
-fs.writeFile("output.txt", s)
-  .then(() => console.log("written successfully"))
-  .catch((err) => console.error(err));
+fs.writeFile("verydisco-forever.txt", s)
+
