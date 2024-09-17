@@ -16,6 +16,6 @@ if (keyword === "decode") {
   if (filename === undefined) {
     filename = "clear.txt";
   }
-  const fileData1 = Buffer.from(fileData, "base64");
+  const fileData1 = Buffer.from(fileData, "base64").toString('utf8');
   await fs.writeFile(filename, fileData1);
 }
