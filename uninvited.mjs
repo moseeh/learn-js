@@ -7,14 +7,13 @@ const PORT = 5000;
 const server = http.createServer(async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
-  // Only handle POST requests
   if (req.method !== 'POST') {
-    return sendError(res, 405, 'Method Not Allowed');
+    return sendResponse(res, 500, { error: 'server failed' });
   }
 
   const guestName = req.url.substring(1);
   if (!guestName) {
-    return sendError(res, 400, 'Guest name is required');
+    return sendResponse(res, 500, { error: 'server failed' });
   }
 
   try {
@@ -24,17 +23,16 @@ const server = http.createServer(async (req, res) => {
     const filePath = path.join('guests', `${guestName}.json`);
     await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
 
-    res.writeHead(201);
-    res.end(JSON.stringify(guestData));
+    sendResponse(res, 201, guestData);
   } catch (err) {
     console.error('Error:', err);
-    sendError(res, 500, 'Server error');
+    sendResponse(res, 500, { error: 'server failed' });
   }
 });
 
-function sendError(res, statusCode, message) {
+function sendResponse(res, statusCode, data) {
   res.writeHead(statusCode);
-  res.end(JSON.stringify({ error: message }));
+  res.end(JSON.stringify(data));
 }
 
 function getRequestBody(req) {
