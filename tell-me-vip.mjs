@@ -16,7 +16,7 @@ try {
       arr.push(`${firstName} ${lastName}`);
     }
   }
-  arr.sort((a, b) => a.split(" ")[1].localeCompare(b.split(" ")[1]));
+  arr.sort()
 
   let s = arr.map((name, index) => `${index + 1}. ${name}`).join("\n");
 
