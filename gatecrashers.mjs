@@ -14,7 +14,6 @@ const AUTHORIZED_USERS = {
 const server = http.createServer(async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
-  // Check authentication
   const authHeader = req.headers.authorization;
   if (!authHeader || !isAuthorized(authHeader)) {
     return sendResponse(res, 401, 'Authorization Required');
@@ -33,18 +32,26 @@ const server = http.createServer(async (req, res) => {
     await fs.mkdir(GUESTS_DIR, { recursive: true });
 
     const body = await getRequestBody(req);
-
-    const filePath = path.join(GUESTS_DIR, `${guestName}.json`);
-    await fs.writeFile(filePath, body);
-
-    let responseData;
+    let guestData;
     try {
-      responseData = JSON.parse(body);
+      guestData = JSON.parse(body);
     } catch (jsonError) {
-      responseData = body;
+      return sendResponse(res, 500, { error: 'server failed' });
     }
 
-    sendResponse(res, 201, responseData);
+    const filePath = path.join(GUESTS_DIR, `${guestName}.json`);
+    
+    // Check if file already exists
+    try {
+      await fs.access(filePath);
+      // If no error is thrown, file exists
+      return sendResponse(res, 500, { error: 'server failed' });
+    } catch {
+      // File doesn't exist, proceed with writing
+      await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
+    }
+
+    sendResponse(res, 200, guestData);
   } catch (err) {
     console.error('Error:', err);
     sendResponse(res, 500, { error: 'server failed' });
