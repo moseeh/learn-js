@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const PORT = 5000;
+const GUESTS_DIR = 'guests';
 
 const server = http.createServer(async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -17,10 +18,13 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    // Ensure the guests directory exists
+    await fs.mkdir(GUESTS_DIR, { recursive: true });
+
     const body = await getRequestBody(req);
     const guestData = JSON.parse(body);
 
-    const filePath = path.join('guests', `${guestName}.json`);
+    const filePath = path.join(GUESTS_DIR, `${guestName}.json`);
     await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
 
     sendResponse(res, 201, guestData);
