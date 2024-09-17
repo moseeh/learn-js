@@ -17,16 +17,18 @@ for (let i = 0; i <= data.length - 1; i++) {
 }
 
 arr.sort();
-let s = ""
+let s = "";
 
-for (let i = 0; i <= arr.length - 1; i++) {
-  s += String(i + 1) + ". " + arr[i] + "\n";
+if (arr.length !== 0) {
+  for (let i = 0; i <= arr.length - 1; i++) {
+    s += String(i + 1) + ". " + arr[i] + "\n";
+  }
 }
 
-fs.writeFile("vip.txt", s)
+fs.writeFile("vip.txt", s);
 
 function saidYes(filename) {
-    const data = fs.readFile(filename, "utf8")
-    const jsonData = JSON.parse(data)
-    return jsonData.answer === "yes"
+  const data = fs.readFile(filename, "utf8");
+  const jsonData = JSON.parse(data);
+  return jsonData.answer === "yes";
 }
