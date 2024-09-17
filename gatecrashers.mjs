@@ -1,72 +1,56 @@
-import http from 'http';
-import fs from 'fs/promises';
-import path from 'path';
+import http from "http";
+import fs from "fs/promises";
+import path from "path";
 
 const PORT = 5000;
-const GUESTS_DIR = 'guests';
-
-const AUTHORIZED_USERS = {
-  'Caleb_Squires': 'abracadabra',
-  'Tyrique_Dalton': 'abracadabra',
-  'Rahima_Young': 'abracadabra'
+const ALLOWED_USERS = {
+  "Caleb_Squires": "abracadabra",
+  "Tyrique_Dalton": "abracadabra",
+  "Rahima_Young": "abracadabra"
 };
+const GUESTS_DIR = process.env.GUESTS_DIR || path.join(process.cwd(), "guests");
 
 const server = http.createServer(async (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
+  if (req.method !== "POST") return sendResponse(res, 404, { error: "not found" });
 
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !isAuthorized(authHeader)) {
-    return sendResponse(res, 401, 'Authorization Required');
+  const authHeader = req.headers["authorization"];
+  if (!authHeader || !validateAuth(authHeader)) {
+    return sendResponse(res, 401, { error: "Authorization Required" }, { "WWW-Authenticate": "Basic" });
   }
 
-  if (req.method !== 'POST') {
-    return sendResponse(res, 500, { error: 'server failed' });
-  }
-
-  const guestName = req.url.substring(1);
-  if (!guestName) {
-    return sendResponse(res, 500, { error: 'server failed' });
-  }
+  const guestName = decodeURIComponent(new URL(req.url, `http://${req.headers.host}`).pathname.slice(1));
+  if (!guestName) return sendResponse(res, 400, { error: "bad request" });
 
   try {
     const body = await getRequestBody(req);
-    let guestData;
-    try {
-      guestData = JSON.parse(body);
-    } catch (jsonError) {
-      return sendResponse(res, 500, { error: 'server failed' });
-    }
+    const data = JSON.parse(body);
 
-    // Instead of writing to a file, we just send the response
-    sendResponse(res, 200, guestData);
+    await fs.mkdir(GUESTS_DIR, { recursive: true });
+    await fs.writeFile(path.join(GUESTS_DIR, `${guestName}.json`), JSON.stringify(data, null, 2), "utf-8");
+
+    sendResponse(res, 200, data);
   } catch (err) {
-    console.error('Error:', err);
-    sendResponse(res, 500, { error: 'server failed' });
+    sendResponse(res, 500, { error: "server failed" });
   }
 });
 
-function isAuthorized(authHeader) {
-  const base64Credentials = authHeader.split(' ')[1];
-  const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-  const [username, password] = credentials.split(':');
+server.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
 
-  return AUTHORIZED_USERS[username] === password;
+function validateAuth(authHeader) {
+  const [username, password] = Buffer.from(authHeader.split(" ")[1], "base64").toString("utf8").split(":");
+  return ALLOWED_USERS[username] === password;
 }
 
-function sendResponse(res, statusCode, data) {
-  res.writeHead(statusCode);
-  res.end(typeof data === 'string' ? data : JSON.stringify(data));
+function sendResponse(res, status, data, headers = {}) {
+  res.writeHead(status, { "Content-Type": "application/json", ...headers });
+  res.end(JSON.stringify(data));
 }
 
 function getRequestBody(req) {
   return new Promise((resolve, reject) => {
-    let body = '';
-    req.on('data', chunk => body += chunk.toString());
-    req.on('end', () => resolve(body));
-    req.on('error', reject);
+    let body = "";
+    req.on("data", chunk => body += chunk);
+    req.on("end", () => resolve(body));
+    req.on("error", reject);
   });
 }
-
-server.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
