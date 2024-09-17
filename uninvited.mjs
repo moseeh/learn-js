@@ -22,19 +22,20 @@ const server = http.createServer(async (req, res) => {
     await fs.mkdir(GUESTS_DIR, { recursive: true });
 
     const body = await getRequestBody(req);
-    let guestData;
-
-    try {
-      guestData = JSON.parse(body);
-    } catch (jsonError) {
-      // If JSON parsing fails, store the raw body
-      guestData = { data: body };
-    }
 
     const filePath = path.join(GUESTS_DIR, `${guestName}.json`);
-    await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
+    await fs.writeFile(filePath, body);
 
-    sendResponse(res, 201, guestData);
+    // Try to parse the body as JSON for the response
+    let responseData;
+    try {
+      responseData = JSON.parse(body);
+    } catch (jsonError) {
+      // If parsing fails, send the raw body
+      responseData = body;
+    }
+
+    sendResponse(res, 201, responseData);
   } catch (err) {
     console.error('Error:', err);
     sendResponse(res, 500, { error: 'server failed' });
