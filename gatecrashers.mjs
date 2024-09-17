@@ -29,28 +29,16 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
-    await fs.mkdir(GUESTS_DIR, { recursive: true });
-
-    const filePath = path.join(GUESTS_DIR, `${guestName}.json`);
-    
-    // Check if file already exists
+    const body = await getRequestBody(req);
+    let guestData;
     try {
-      await fs.access(filePath);
-      // If no error is thrown, file exists, proceed with updating
-      const body = await getRequestBody(req);
-      let guestData;
-      try {
-        guestData = JSON.parse(body);
-      } catch (jsonError) {
-        return sendResponse(res, 500, { error: 'server failed' });
-      }
-
-      await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
-      sendResponse(res, 200, guestData);
-    } catch {
-      // File doesn't exist, return an error
+      guestData = JSON.parse(body);
+    } catch (jsonError) {
       return sendResponse(res, 500, { error: 'server failed' });
     }
+
+    // Instead of writing to a file, we just send the response
+    sendResponse(res, 200, guestData);
   } catch (err) {
     console.error('Error:', err);
     sendResponse(res, 500, { error: 'server failed' });
