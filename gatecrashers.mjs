@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const PORT = 5000;
-const GUESTS_DIR = 'guests';
+const GUESTS_DIR = path.join(__dirname, 'guests'); // Ensure absolute path
 
 const AUTHORIZED_USERS = {
   'Caleb_Squires': 'abracadabra',
@@ -29,7 +29,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
-    await fs.mkdir(GUESTS_DIR, { recursive: true });
+    await fs.mkdir(GUESTS_DIR, { recursive: true }); // Ensure guests directory exists
 
     const body = await getRequestBody(req);
     let guestData;
