@@ -10,7 +10,8 @@ try {
   let arr = [];
 
   for (let i = 0; i <= data.length - 1; i++) {
-    if (await saidYes(join(arg, data[i]))) {  // Await the async function
+    if (await saidYes(join(arg, data[i]))) {
+      // Await the async function
       let s = data[i].replace(/\.json$/, "");
       let a = s.split("_");
       arr.push(a[1] + " " + a[0]);
@@ -22,19 +23,22 @@ try {
 
   if (arr.length !== 0) {
     for (let i = 0; i <= arr.length - 1; i++) {
-      s += String(i + 1) + ". " + arr[i] + "\n";
+      if (i !== arr.length - 1) {
+        s += String(i + 1) + ". " + arr[i] + "\n";
+      } else {
+        s += String(i + 1) + ". " + arr[i];
+      }
     }
   }
 
-  await fs.writeFile("vip.txt", s);  // Await the file write
-
+  await fs.writeFile("vip.txt", s); // Await the file write
 } catch (err) {
   console.error("Error:", err);
 }
 
 async function saidYes(filename) {
   try {
-    const data = await fs.readFile(filename, "utf8");  // Await the file read
+    const data = await fs.readFile(filename, "utf8"); // Await the file read
     const jsonData = JSON.parse(data);
     return jsonData.answer === "yes";
   } catch (err) {
