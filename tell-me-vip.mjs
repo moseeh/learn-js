@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import path from "path";
 
 let arg = process.argv[2];
 if (arg === undefined) {
@@ -8,37 +9,26 @@ if (arg === undefined) {
 try {
   const data = await fs.readdir(arg, "utf8");
   let arr = [];
-
-  for (let i = 0; i <= data.length - 1; i++) {
-    if (await saidYes(join(arg, data[i]))) {
-      // Await the async function
+  for (let i = 0; i < data.length; i++) {
+    if (await saidYes(path.join(arg, data[i]))) {
       let s = data[i].replace(/\.json$/, "");
-      let a = s.split("_");
-      arr.push(a[1] + " " + a[0]);
+      let [lastName, firstName] = s.split("_");
+      arr.push(`${firstName} ${lastName}`);
     }
   }
+  arr.sort((a, b) => a.split(" ")[1].localeCompare(b.split(" ")[1]));
 
-  arr.sort();
-  let s = "";
+  let s = arr.map((name, index) => `${index + 1}. ${name}`).join("\n");
 
-  if (arr.length !== 0) {
-    for (let i = 0; i <= arr.length - 1; i++) {
-      if (i !== arr.length - 1) {
-        s += String(i + 1) + ". " + arr[i] + "\n";
-      } else {
-        s += String(i + 1) + ". " + arr[i];
-      }
-    }
-  }
-
-  await fs.writeFile("vip.txt", s); // Await the file write
+  await fs.writeFile("vip.txt", s);
+  console.log(s); // Print the result to console
 } catch (err) {
   console.error("Error:", err);
 }
 
 async function saidYes(filename) {
   try {
-    const data = await fs.readFile(filename, "utf8"); // Await the file read
+    const data = await fs.readFile(filename, "utf8");
     const jsonData = JSON.parse(data);
     return jsonData.answer === "yes";
   } catch (err) {
