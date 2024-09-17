@@ -3,7 +3,7 @@ import fs from "fs/promises";
 let file = process.argv[2];
 let keyword = process.argv[3];
 let filename = process.argv[4];
-const fileData = fs.readFile(file);
+const fileData = await fs.readFile(file);
 if (keyword === "encode") {
   if (filename === undefined) {
     filename = "cypher.txt";
