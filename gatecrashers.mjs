@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const PORT = 5000;
-const GUESTS_DIR = path.join(__dirname, 'guests'); // Ensure absolute path
+const GUESTS_DIR = 'guests';
 
 const AUTHORIZED_USERS = {
   'Caleb_Squires': 'abracadabra',
@@ -29,29 +29,28 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
-    await fs.mkdir(GUESTS_DIR, { recursive: true }); // Ensure guests directory exists
-
-    const body = await getRequestBody(req);
-    let guestData;
-    try {
-      guestData = JSON.parse(body);
-    } catch (jsonError) {
-      return sendResponse(res, 500, { error: 'server failed' });
-    }
+    await fs.mkdir(GUESTS_DIR, { recursive: true });
 
     const filePath = path.join(GUESTS_DIR, `${guestName}.json`);
     
     // Check if file already exists
     try {
       await fs.access(filePath);
-      // If no error is thrown, file exists
-      return sendResponse(res, 500, { error: 'server failed' });
-    } catch {
-      // File doesn't exist, proceed with writing
-      await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
-    }
+      // If no error is thrown, file exists, proceed with updating
+      const body = await getRequestBody(req);
+      let guestData;
+      try {
+        guestData = JSON.parse(body);
+      } catch (jsonError) {
+        return sendResponse(res, 500, { error: 'server failed' });
+      }
 
-    sendResponse(res, 200, guestData);
+      await fs.writeFile(filePath, JSON.stringify(guestData, null, 2));
+      sendResponse(res, 200, guestData);
+    } catch {
+      // File doesn't exist, return an error
+      return sendResponse(res, 500, { error: 'server failed' });
+    }
   } catch (err) {
     console.error('Error:', err);
     sendResponse(res, 500, { error: 'server failed' });
