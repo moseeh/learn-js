@@ -4,6 +4,7 @@ import path from "path";
 let arg = process.argv[2];
 if (arg === undefined) {
   arg = process.argv[1];
+  
 }
 
 try {
